@@ -1,0 +1,4 @@
+# IDE configs and OS artifacts
+.DS_Store
+*.pdf
+*.pptx
