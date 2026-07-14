@@ -152,6 +152,26 @@ def run_simulation(model_name, use_dummy=False, task='niah'):
     plt.savefig(output_path, dpi=300)
     print(f"\nSaved chart to '{output_path}'")
 
+    # ---------------------------------------------------------
+    # 6. Plotting Pareto Curve (Throughput vs Accuracy)
+    # ---------------------------------------------------------
+    fig2, ax_pareto = plt.subplots(figsize=(10, 6))
+    ax_pareto.plot(system_throughputs, accuracies, marker='o', linestyle='-', color='b', linewidth=2, markersize=8)
+    
+    # Annotate points with the block size
+    for bs, t, a in zip(block_sizes_tokens, system_throughputs, accuracies):
+        ax_pareto.annotate(f"{bs}", (t, a), textcoords="offset points", xytext=(0,10), ha='center')
+
+    ax_pareto.set_xlabel('Effective Throughput (Tokens/sec)', fontweight='bold', fontsize=12)
+    ax_pareto.set_ylabel('Profiled Accuracy (%)', fontweight='bold', fontsize=12)
+    ax_pareto.set_title(f'Throughput vs Accuracy Pareto: {safe_model_name}', fontsize=14, fontweight='bold')
+    ax_pareto.grid(True, linestyle='--', alpha=0.7)
+    fig2.tight_layout()
+
+    pareto_output_path = os.path.join(output_dir, f'{prefix}pareto_{task}_{safe_model_name}.png')
+    fig2.savefig(pareto_output_path, dpi=300)
+    print(f"Saved Pareto chart to '{pareto_output_path}'")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Phase 3 SolidAttention Simulation")
     parser.add_argument("--model", type=str, default="meta-llama/Meta-Llama-3.1-8B-4bit",
