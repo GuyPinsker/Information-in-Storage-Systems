@@ -36,15 +36,16 @@ def get_custom_attention(block_size, k_budget, original_attention_call):
         # Apply SolidAttention ONLY during decoding (L == 1)
         if L == 1 and cache is not None:
             kv_len = keys.shape[2]
-            num_deterministic = 500
+            num_deterministic = k_budget // 2
+            num_sparse = k_budget - num_deterministic
             
-            if kv_len > num_deterministic:
-                k_blocks_to_keep = math.floor(k_budget / block_size)
+            if kv_len > k_budget:
+                k_blocks_to_keep = math.floor(num_sparse / block_size)
                 if k_blocks_to_keep == 0:
                     k_blocks_to_keep = 1
                 
-                init_tokens = 250
-                local_tokens = 250
+                init_tokens = num_deterministic // 2
+                local_tokens = num_deterministic - init_tokens
                 
                 sparse_start = init_tokens
                 sparse_end = kv_len - local_tokens
@@ -167,12 +168,13 @@ def generate_needle_prompt(tokenizer, haystack_text, context_length, needle_fact
     
     return prompt, depth_pct, context_str
 
-def run_evaluation(model_name, haystack_filenames, num_trials=20, block_sizes=[1, 2, 4, 8, 16, 32, 64, 128, 256], verbose=False):
+def run_evaluation(model_name, haystack_filenames, num_trials=20, block_sizes=[1, 2, 4, 8, 16, 32, 64, 128, 256], context_budget=1000, verbose=False):
     """
     Runs the SolidAttention accuracy evaluation using MLX natively on Apple Silicon GPU.
     """
     print(f"Loading {model_name} in MLX format...")
     model, tokenizer = load(model_name)
+    model.set_dtype(mx.float16)
     
     import mlx_lm.models.llama as llama_module
     import mlx_lm.models.qwen2 as qwen_module
@@ -236,10 +238,10 @@ def run_evaluation(model_name, haystack_filenames, num_trials=20, block_sizes=[1
             
     # 2. SolidAttention
     for bs in block_sizes:
-        k = math.floor(500 / bs)
+        k = math.floor((context_budget - (context_budget // 2)) / bs)
         if k == 0: k = 1 
             
-        attn_class.__call__ = get_custom_attention(bs, 500, original_call)
+        attn_class.__call__ = get_custom_attention(bs, context_budget, original_call)
         print(f"\nEvaluating Block Size: {bs} (Top-K: {k})...")
         
         for i, prompt in enumerate(prompts):

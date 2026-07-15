@@ -6,7 +6,7 @@ import os
 import random
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-def get_custom_attention(block_size, selected_budget, repeat_kv_func):
+def get_custom_attention(block_size, k_budget, repeat_kv_func):
     """
     Creates a custom monkey-patched attention function that implements SolidAttention's
     Block-wise Sparsity logic by modifying the attention mask dynamically.
@@ -28,16 +28,17 @@ def get_custom_attention(block_size, selected_budget, repeat_kv_func):
         q_len = query.size(2)
         kv_len = key_states.size(2)
         
-        # Determine the Top-K budget dynamically
-        k_blocks_to_keep = math.floor(selected_budget / block_size)
-        
-        # As per the paper: 50% of the VRAM budget (500 tokens) goes to Deterministic Blocks
-        num_deterministic = 500
+        num_deterministic = k_budget // 2
+        num_sparse = k_budget - num_deterministic
         
         # We only sparsify during the single-token generation steps if the context is long enough
-        if q_len == 1 and kv_len > num_deterministic and k_blocks_to_keep > 0:
-            init_tokens = 250
-            local_tokens = 250
+        if q_len == 1 and kv_len > k_budget:
+            k_blocks_to_keep = math.floor(num_sparse / block_size)
+            if k_blocks_to_keep == 0:
+                k_blocks_to_keep = 1
+                
+            init_tokens = num_deterministic // 2
+            local_tokens = num_deterministic - init_tokens
             
             sparse_start = init_tokens
             sparse_end = kv_len - local_tokens
@@ -153,7 +154,7 @@ def generate_needle_prompt(tokenizer, haystack_text, context_length, needle_fact
     
     return prompt, depth_pct, context_str
 
-def run_evaluation(model_name, haystack_filenames, num_trials=20, block_sizes=[1, 2, 4, 8, 16, 32, 64, 128, 256], verbose=False):
+def run_evaluation(model_name, haystack_filenames, num_trials=20, block_sizes=[1, 2, 4, 8, 16, 32, 64, 128, 256], context_budget=1000, verbose=False):
     """
     Runs the SolidAttention accuracy evaluation using the generation-based Needle-in-a-Haystack benchmark.
     """
@@ -240,11 +241,11 @@ def run_evaluation(model_name, haystack_filenames, num_trials=20, block_sizes=[1
             
     # 2. SolidAttention
     for bs in block_sizes:
-        k = math.floor(500 / bs)
+        k = math.floor((context_budget - (context_budget // 2)) / bs)
         if k == 0:
             k = 1 
             
-        modeling_module.eager_attention_forward = get_custom_attention(bs, 500, repeat_kv)
+        modeling_module.eager_attention_forward = get_custom_attention(bs, context_budget, repeat_kv)
         print(f"\nEvaluating Block Size: {bs} (Top-K: {k})...")
         
         for i, prompt in enumerate(prompts):
