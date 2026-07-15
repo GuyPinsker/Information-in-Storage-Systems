@@ -119,58 +119,25 @@ def run_simulation(model_name, use_dummy=False, task='niah'):
         print(f"{bs:<15} | {k:<10} | {avg_missed_blocks:<20.2f} | {total_stall_penalty_ms:<20.2f} | {tokens_per_sec:<15.2f}")
         
     # ---------------------------------------------------------
-    # 5. Plotting Dual Y-Axis Chart
+    # 5. Export Results
     # ---------------------------------------------------------
-    x_labels = [str(bs) for bs in block_sizes_tokens]
-    system_throughputs = results_throughput_tps
     accuracies = [empirical_accuracy[bs] for bs in block_sizes_tokens]
     if len(accuracies) > 0 and max(accuracies) <= 1.0:
         accuracies = [acc * 100.0 for acc in accuracies]
+        
+    output_data = {
+        "block_sizes": block_sizes_tokens,
+        "throughputs": results_throughput_tps,
+        "accuracies": accuracies
+    }
     
-    fig, ax1 = plt.subplots(figsize=(10, 6))
-    
-    # Left Y-Axis: System Throughput (Blue)
-    ax1.set_xlabel('Block Size (Tokens)', fontweight='bold')
-    ax1.set_ylabel('Effective Throughput (Tokens/sec)', color='tab:blue', fontweight='bold')
-    ax1.plot(x_labels, system_throughputs, marker='o', color='tab:blue', linewidth=2, label='Tokens/sec')
-    ax1.tick_params(axis='y', labelcolor='tab:blue')
-    ax1.grid(True, linestyle='--', alpha=0.6)
-    
-    # Right Y-Axis: Accuracy/Recall (Red)
-    ax2 = ax1.twinx()
-    ax2.set_ylabel('Profiled Accuracy (%)', color='tab:red', fontweight='bold')
-    ax2.plot(x_labels, accuracies, marker='s', color='tab:red', linewidth=2, label='Accuracy')
-    ax2.tick_params(axis='y', labelcolor='tab:red')
-    
-    # Title and Legend
-    plt.title(f'SolidAttention Tradeoff: {safe_model_name}', fontsize=14, fontweight='bold')
-    fig.tight_layout()
-    
-    # Use dummy prefix for output file if running dummy test
     prefix = "dummy_" if use_dummy else ""
-    output_path = os.path.join(output_dir, f'{prefix}solidattention_tradeoff_{task}_{safe_model_name}.png')
-    plt.savefig(output_path, dpi=300)
-    print(f"\nSaved chart to '{output_path}'")
-
-    # ---------------------------------------------------------
-    # 6. Plotting Pareto Curve (Throughput vs Accuracy)
-    # ---------------------------------------------------------
-    fig2, ax_pareto = plt.subplots(figsize=(10, 6))
-    ax_pareto.plot(system_throughputs, accuracies, marker='o', linestyle='-', color='b', linewidth=2, markersize=8)
+    json_output_path = os.path.join(output_dir, f'{prefix}simulation_results_{task}_{safe_model_name}.json')
     
-    # Annotate points with the block size
-    for bs, t, a in zip(block_sizes_tokens, system_throughputs, accuracies):
-        ax_pareto.annotate(f"{bs}", (t, a), textcoords="offset points", xytext=(0,10), ha='center')
-
-    ax_pareto.set_xlabel('Effective Throughput (Tokens/sec)', fontweight='bold', fontsize=12)
-    ax_pareto.set_ylabel('Profiled Accuracy (%)', fontweight='bold', fontsize=12)
-    ax_pareto.set_title(f'Throughput vs Accuracy Pareto: {safe_model_name}', fontsize=14, fontweight='bold')
-    ax_pareto.grid(True, linestyle='--', alpha=0.7)
-    fig2.tight_layout()
-
-    pareto_output_path = os.path.join(output_dir, f'{prefix}pareto_{task}_{safe_model_name}.png')
-    fig2.savefig(pareto_output_path, dpi=300)
-    print(f"Saved Pareto chart to '{pareto_output_path}'")
+    with open(json_output_path, 'w') as f:
+        json.dump(output_data, f, indent=4)
+        
+    print(f"\nSaved simulation results to '{json_output_path}'")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Phase 3 SolidAttention Simulation")
