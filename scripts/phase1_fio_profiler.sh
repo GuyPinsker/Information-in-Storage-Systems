@@ -16,7 +16,7 @@ BLOCK_TOKEN_SIZES=("1" "2" "4" "8" "16" "32" "64" "128" "256")
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT_DIR="$(dirname "$SCRIPT_DIR")/outputs"
 mkdir -p "$OUTPUT_DIR"
-OUTPUT_JSON="$OUTPUT_DIR/phase1_throughput.json"
+OUTPUT_JSON="$OUTPUT_DIR/phase1_throughput-${TOKEN_SIZE_KB}KB.json"
 
 if [ ! -f "$DUMMY_FILE" ]; then
     echo "Creating dummy file of size $FILE_SIZE..."

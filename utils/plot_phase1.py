@@ -1,9 +1,17 @@
 import os
 import json
+import argparse
 import matplotlib.pyplot as plt
 
 output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'outputs')
-json_path = os.path.join(output_dir, 'phase1_throughput.json')
+default_json_path = os.path.join(output_dir, 'phase1_throughput.json')
+
+parser = argparse.ArgumentParser(description="Plot Phase 1 Random Read Throughput")
+parser.add_argument("--json_path", type=str, nargs="?", default=default_json_path, help="Path to the JSON file containing throughput data")
+parser.add_argument("--token_size", type=int, nargs="?", default=4, help="Token size in KB")
+args = parser.parse_args()
+
+json_path = args.json_path
 
 if not os.path.exists(json_path):
     print(f"Error: {json_path} not found. Please run scripts/phase1_fio_profiler.sh first.")
@@ -18,7 +26,7 @@ throughputs = [data[str(bs)] for bs in block_sizes]
 
 plt.figure(figsize=(10, 6))
 plt.plot(block_sizes, throughputs, marker='o', linewidth=2, color='tab:blue')
-plt.title('MacBook Air M4 (512GB SSD) Random Read Throughput')
+plt.title(f'MacBook Air M4 (512GB SSD) Random Read Throughput | {args.token_size}KB Tokens')
 plt.xlabel('Block Size (Tokens)')
 plt.ylabel('Throughput (MB/s)')
 plt.grid(True, linestyle='--', alpha=0.7)
@@ -27,6 +35,8 @@ plt.xticks(block_sizes, [str(bs) for bs in block_sizes])
 plt.tight_layout()
 
 os.makedirs(output_dir, exist_ok=True)
-output_path = os.path.join(output_dir, 'phase1_throughput.png')
+json_basename = os.path.basename(json_path)
+output_filename = os.path.splitext(json_basename)[0] + '.png'
+output_path = os.path.join(output_dir, output_filename)
 plt.savefig(output_path, dpi=300)
 print(f"Saved chart to {output_path}")
