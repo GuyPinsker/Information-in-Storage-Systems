@@ -5,7 +5,18 @@ import argparse
 import random
 import matplotlib.pyplot as plt
 
-def run_simulation(throughput_path, accuracy_path, output_path):
+def run_simulation(
+    throughput_path,
+    accuracy_path,
+    output_path=None,
+    selected_budget_tokens=500,    # 500 tokens for Selected Blocks (Top-K)
+    generation_steps=1000,         # Generating 1000 new tokens
+    token_size_bytes=4*1024,       # 4 KB per token per layer (FP16 K+V)
+    num_layers=32,                 # 32 layers in Llama-3-8B
+    ssd_base_latency_ms=0.05,      # Base NVMe latency
+    miss_rate=0.19,                # 19% miss rate for speculative prefetcher
+    compute_time_ms_per_step=20.0  # Assumed dummy compute time (20ms/token)
+):
     """
     Simulates the SolidAttention framework performance using the profiled NVMe
     throughputs (Phase 1) and empirical accuracies (Phase 2).
@@ -14,6 +25,13 @@ def run_simulation(throughput_path, accuracy_path, output_path):
         throughput_path (str): Path to the empirical throughput JSON file.
         accuracy_path (str): Path to the empirical accuracy JSON file.
         output_path (str): Path to save the simulation results directory.
+        selected_budget_tokens (int): Budget tokens for Selected Blocks (Top-K).
+        generation_steps (int): Number of tokens to generate.
+        token_size_bytes (int): Size per token per layer in bytes.
+        num_layers (int): Number of layers in the model.
+        ssd_base_latency_ms (float): Base NVMe latency in ms.
+        miss_rate (float): Miss rate for speculative prefetcher.
+        compute_time_ms_per_step (float): Compute time in ms per step.
     """
     # ---------------------------------------------------------
     # 1. Empirical Throughput (Phase 1)
@@ -48,14 +66,6 @@ def run_simulation(throughput_path, accuracy_path, output_path):
     # ---------------------------------------------------------
     context_length = 128000       # 128k tokens context
     vram_budget_tokens = 1000     # 1000 tokens VRAM budget
-    selected_budget_tokens = 500  # 500 tokens for Selected Blocks (Top-K)
-    generation_steps = 1000       # Generating 1000 new tokens
-    
-    token_size_bytes = 4 * 1024   # 16 KB per token per layer (FP16 K+V)
-    num_layers = 32               # 32 layers in Llama-3-8B
-    ssd_base_latency_ms = 0.05    # Base NVMe latency
-    miss_rate = 0.19              # 19% miss rate for speculative prefetcher
-    compute_time_ms_per_step = 20.0 # Assumed dummy compute time (20ms/token)
     
     # ---------------------------------------------------------
     # 4. The Workload Loop
@@ -129,11 +139,38 @@ def run_simulation(throughput_path, accuracy_path, output_path):
         
     print(f"\nSaved simulation results to '{output_path}'")
 
+def parse_int_expr(val):
+    try:
+        return int(val)
+    except ValueError:
+        try:
+            return int(eval(val, {"__builtins__": None}, {}))
+        except Exception:
+            raise argparse.ArgumentTypeError(f"Invalid integer expression: '{val}'")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Phase 3 SolidAttention Simulation")
     parser.add_argument("--throughput", type=str, required=True, help="Path to the throughput JSON file")
     parser.add_argument("--accuracy", type=str, required=True, help="Path to the accuracy JSON file")
     parser.add_argument("--output", type=str, default=None, help="Path to save the output simulation results JSON")
+    parser.add_argument("--selected-budget-tokens", type=int, default=500, help="Selected budget tokens (Top-K) (default: 500)")
+    parser.add_argument("--generation-steps", type=int, default=1000, help="Number of generation steps (default: 1000)")
+    parser.add_argument("--token-size-bytes", type=parse_int_expr, default=4 * 1024, help="Token size in bytes per layer (default: 4096)")
+    parser.add_argument("--num-layers", type=int, default=32, help="Number of layers in model (default: 32)")
+    parser.add_argument("--ssd-base-latency-ms", type=float, default=0.05, help="Base NVMe latency in ms (default: 0.05)")
+    parser.add_argument("--miss-rate", type=float, default=0.19, help="Miss rate for speculative prefetcher (default: 0.19)")
+    parser.add_argument("--compute-time-ms-per-step", type=float, default=20.0, help="Compute time in ms per step (default: 20.0)")
     args = parser.parse_args()
     
-    run_simulation(args.throughput, args.accuracy, args.output)
+    run_simulation(
+        throughput_path=args.throughput,
+        accuracy_path=args.accuracy,
+        output_path=args.output,
+        selected_budget_tokens=args.selected_budget_tokens,
+        generation_steps=args.generation_steps,
+        token_size_bytes=args.token_size_bytes,
+        num_layers=args.num_layers,
+        ssd_base_latency_ms=args.ssd_base_latency_ms,
+        miss_rate=args.miss_rate,
+        compute_time_ms_per_step=args.compute_time_ms_per_step
+    )

@@ -4,10 +4,11 @@ This directory contains the core execution scripts representing the three phases
 
 ## Phase 1: SSD Profiling
 *   `phase1_fio_profiler.sh`: A Bash script that uses `fio` to measure random read throughput on the host's NVMe SSD across various block sizes.
-    *   **Configurable Parameters**:
-        *   `FILE_SIZE`: Size of the dummy test file (e.g., `10G`, `1G`). Default: `10G`.
-        *   `NUM_RUNS`: Number of profiling runs to average results. Default: `5`.
-        *   `TOKEN_SIZE_KB`: KV cache size in KB per token. Default: `128`.
+    *   **Configurable Parameters (via CLI or environment variables)**:
+        *   `TOKEN_SIZE_KB`: KV cache size in KB per token. (Default: `4`, CLI flag `-t` or `--token-size`, or positional `$1`)
+        *   `numjobs`: Number of parallel jobs for `fio`. (Default: `4`, CLI flag `-j` or `--numjobs`, or positional `$2`)
+        *   `iodepth`: I/O depth queue size per job for `fio`. (Default: `32`, CLI flag `-d` or `--iodepth`, or positional `$3`)
+        *   `OUTPUT_JSON`: Output JSON file path. (Default: `outputs/phase1_throughput-${TOKEN_SIZE_KB}KB.json`, CLI flag `-o` or `--output`, or positional `$4`)
 
 ## Phase 2: Accuracy Profiling
 Due to limitations with PyTorch's `bitsandbytes` library on Apple Silicon (which forces slow GPU-to-CPU weight transfers), we maintain two separate implementations of the Phase 2 scripts.

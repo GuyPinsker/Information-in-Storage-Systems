@@ -8,15 +8,66 @@ FILE_SIZE="10G"
 NUM_RUNS=5
 
 # 1 token = 16 KB of FP16 K+V data per layer.
-TOKEN_SIZE_KB=16
+# Default parameters
+TOKEN_SIZE_KB=${TOKEN_SIZE_KB:-4}
+NUMJOBS=${NUMJOBS:-4}
+IODEPTH=${IODEPTH:-32}
+OUTPUT_JSON=${OUTPUT_JSON:-""}
+
+# Parse command line arguments (supports flags or positional: [TOKEN_SIZE_KB] [NUMJOBS] [IODEPTH] [OUTPUT_JSON])
+POS_ARG_COUNT=0
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -t|--token-size|--token_size_kb)
+            TOKEN_SIZE_KB="$2"
+            shift 2
+            ;;
+        -j|--numjobs)
+            NUMJOBS="$2"
+            shift 2
+            ;;
+        -d|--iodepth)
+            IODEPTH="$2"
+            shift 2
+            ;;
+        -o|--output|--output-file|--output-json)
+            OUTPUT_JSON="$2"
+            shift 2
+            ;;
+        -h|--help)
+            echo "Usage: $0 [TOKEN_SIZE_KB] [NUMJOBS] [IODEPTH] [OUTPUT_JSON]"
+            echo "  or: $0 [-t|--token-size KB] [-j|--numjobs JOBS] [-d|--iodepth DEPTH] [-o|--output FILE]"
+            exit 0
+            ;;
+        *)
+            if [[ $POS_ARG_COUNT -eq 0 ]]; then
+                TOKEN_SIZE_KB="$1"
+            elif [[ $POS_ARG_COUNT -eq 1 ]]; then
+                NUMJOBS="$1"
+            elif [[ $POS_ARG_COUNT -eq 2 ]]; then
+                IODEPTH="$1"
+            elif [[ $POS_ARG_COUNT -eq 3 ]]; then
+                OUTPUT_JSON="$1"
+            fi
+            POS_ARG_COUNT=$((POS_ARG_COUNT + 1))
+            shift
+            ;;
+    esac
+done
+
 BLOCK_TOKEN_SIZES=("1" "2" "4" "8" "16" "32" "64" "128" "256")
 
 # Prepare output file
 # Use native directory queries instead of realpath to ensure macOS compatibility
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT_DIR="$(dirname "$SCRIPT_DIR")/outputs"
-mkdir -p "$OUTPUT_DIR"
-OUTPUT_JSON="$OUTPUT_DIR/phase1_throughput-${TOKEN_SIZE_KB}KB.json"
+
+if [ -z "$OUTPUT_JSON" ]; then
+    mkdir -p "$OUTPUT_DIR"
+    OUTPUT_JSON="$OUTPUT_DIR/phase1_throughput-${TOKEN_SIZE_KB}KB.json"
+else
+    mkdir -p "$(dirname "$OUTPUT_JSON")"
+fi
 
 if [ ! -f "$DUMMY_FILE" ]; then
     echo "Creating dummy file of size $FILE_SIZE..."
@@ -27,6 +78,7 @@ fi
 results_json=()
 
 echo "Starting FIO SSD Profiling on Dummy File ($FILE_SIZE)..."
+echo "Parameters: TOKEN_SIZE_KB=$TOKEN_SIZE_KB, numjobs=$NUMJOBS, iodepth=$IODEPTH, output=$OUTPUT_JSON"
 echo "Running $NUM_RUNS times for each size and calculating averages."
 echo "Block Size (Tokens) | Transfer Size (KB) | Avg Throughput (MB/s) | Avg IOPS"
 echo "------------------------------------------------------------------------------"
@@ -48,8 +100,8 @@ for i in "${!BLOCK_TOKEN_SIZES[@]}"; do
             --rw=randread \
             --bs=$bs \
             --direct=1 \
-            --numjobs=1 \
-            --iodepth=1 \
+            --numjobs=$NUMJOBS \
+            --iodepth=$IODEPTH \
             --runtime=10 \
             --time_based \
             --output-format=json)

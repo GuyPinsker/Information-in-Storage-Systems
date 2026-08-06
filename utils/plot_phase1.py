@@ -9,6 +9,7 @@ default_json_path = os.path.join(output_dir, 'phase1_throughput.json')
 parser = argparse.ArgumentParser(description="Plot Phase 1 Random Read Throughput")
 parser.add_argument("--json_path", type=str, nargs="?", default=default_json_path, help="Path to the JSON file containing throughput data")
 parser.add_argument("--token_size", type=int, nargs="?", default=4, help="Token size in KB")
+parser.add_argument("--output_filename", "--output", "-o", type=str, nargs="?", default=None, help="Output image filename or path")
 args = parser.parse_args()
 
 json_path = args.json_path
@@ -34,9 +35,13 @@ plt.xscale('log', base=2)
 plt.xticks(block_sizes, [str(bs) for bs in block_sizes])
 plt.tight_layout()
 
-os.makedirs(output_dir, exist_ok=True)
-json_basename = os.path.basename(json_path)
-output_filename = os.path.splitext(json_basename)[0] + '.png'
-output_path = os.path.join(output_dir, output_filename)
+if args.output_filename:
+    output_path = args.output_filename if os.path.dirname(args.output_filename) else os.path.join(output_dir, args.output_filename)
+else:
+    json_basename = os.path.basename(json_path)
+    output_filename = os.path.splitext(json_basename)[0] + '.png'
+    output_path = os.path.join(output_dir, output_filename)
+
+os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 plt.savefig(output_path, dpi=300)
 print(f"Saved chart to {output_path}")
