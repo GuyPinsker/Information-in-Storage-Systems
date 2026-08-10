@@ -20,30 +20,42 @@ conda activate storage-systems
 ```
 
 ### Phase 1: Storage Profiling
-Measures the NVMe random read throughput of your machine across varying block sizes using `fio`.
+Measures the NVMe random read throughput of your machine across varying block sizes using `fio` and plots the results.
 ```bash
-./scripts/phase1_fio_profiler.sh
+./scripts/run_phase1.sh
 ```
 
 ### Phase 2: Model Accuracy Profiling
-Evaluates the model's performance on Needle-In-A-Haystack and LongBench when dropping chunks of its attention context based on different block sizes.
+Evaluates the model's performance on Needle-In-A-Haystack when dropping chunks of its attention context based on different block sizes.
 
 For Apple Silicon (MLX):
 ```bash
 python scripts/mlx/phase2_accuracy_profiler.py --model mlx-community/Meta-Llama-3.1-8B-4bit --trials 20 --haystacks us_haystack.txt ww2_haystack.txt --verbose
-python scripts/mlx/phase2_longbench_profiler.py --model mlx-community/Meta-Llama-3.1-8B-4bit --samples 3
 ```
 
 For **PyTorch**:
 ```bash
 python scripts/pytorch/phase2_accuracy_profiler.py --model meta-llama/Meta-Llama-3.1-8B --trials 20 --haystacks us_haystack.txt ww2_haystack.txt --verbose
-python scripts/pytorch/phase2_longbench_profiler.py --model meta-llama/Meta-Llama-3.1-8B --samples 3
 ```
 
 ### 3. Simulation & Trade-off Plotting (Phase 3)
-Combine the results to plot the Pareto front of the SolidAttention tradeoff:
+Run simulations and combine the results across multiple models to plot the Pareto front of the SolidAttention tradeoff:
 
 ```bash
-python scripts/phase3_simulation.py --model Meta-Llama-3.1-8B-4bit
+./scripts/run_phase3.sh
 ```
-*(Optionally pass `--dummy` to test the simulation using dummy data without running the 30-sample evaluations)*
+
+You can also run the underlying python script manually for a single configuration:
+```bash
+python scripts/phase3_simulation.py --throughput <path-to-json> --accuracy <path-to-json> --output <path-to-json>
+```
+
+**FDP Simulation Mode**
+You can also simulate the FDP (Flexible Data Placement) hardware improvement, which models cross-channel striping and zero Garbage Collection (GC) overhead:
+```bash
+python scripts/phase3_simulation.py --throughput <path-to-json> --accuracy <path-to-json> --output <path-to-json> --enable-fdp
+```
+*Optional standard simulation flags:*
+* `--gc-spike-prob 0.05` (5% chance of a GC spike)
+* `--gc-penalty-ms 50.0` (Stall penalty during GC)
+* `--stripe-multiplier 4.0` (FDP throughput multiplier simulating 4-channel striping)

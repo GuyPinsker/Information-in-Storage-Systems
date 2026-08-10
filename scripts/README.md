@@ -3,6 +3,7 @@
 This directory contains the core execution scripts representing the three phases of the SolidAttention evaluation.
 
 ## Phase 1: SSD Profiling
+*   `run_phase1.sh`: **(Primary Entry Point)** A wrapper script that automates running `phase1_fio_profiler.sh` across multiple block sizes and plotting the results.
 *   `phase1_fio_profiler.sh`: A Bash script that uses `fio` to measure random read throughput on the host's NVMe SSD across various block sizes.
     *   **Configurable Parameters (via CLI or environment variables)**:
         *   `TOKEN_SIZE_KB`: KV cache size in KB per token. (Default: `4`, CLI flag `-t` or `--token-size`, or positional `$1`)
@@ -22,10 +23,6 @@ Located in `scripts/mlx/`. These scripts use the Apple-native `mlx` and `mlx-lm`
         *   `--trials`: Number of trials to run per block size configuration. (Default: `20`)
         *   `--haystacks`: List of haystack filenames located in `utils/` to distribute the trials across. (Default: `us_haystack.txt ww2_haystack.txt`)
         *   `--verbose`: Flag to print 1-2 lines of context surrounding the needle injection.
-*   `mlx/phase2_longbench_profiler.py`: Evaluates the model on the LongBench (HotpotQA) dataset.
-    *   **Configurable Parameters (via CLI)**:
-        *   `--model`: The Hugging Face or MLX Community model ID.
-        *   `--samples`: The number of dataset samples to evaluate. (Default: `3`)
 
 ### 2. PyTorch Implementation (Cross-Platform / Reference)
 Located in `scripts/pytorch/`. These are the standard cross-platform scripts. **Note:** On Mac, these are hardcoded to run on the CPU (`device_map="cpu"`) to avoid system crashes. They will take a long time to run.
@@ -36,24 +33,27 @@ Located in `scripts/pytorch/`. These are the standard cross-platform scripts. **
         *   `--trials`: Number of trials to run per block size configuration. (Default: `20`)
         *   `--haystacks`: List of haystack filenames located in `utils/` to distribute the trials across. (Default: `us_haystack.txt ww2_haystack.txt`)
         *   `--verbose`: Flag to print 1-2 lines of context surrounding the needle injection.
-*   `pytorch/phase2_longbench_profiler.py`: Evaluates the model on the LongBench (HotpotQA) dataset.
-    *   **Configurable Parameters (via CLI)**:
-        *   `--model`: The Hugging Face model ID.
-        *   `--samples`: The number of dataset samples to evaluate. (Default: `3`)).
 ### Common Configurable Parameters (in scripts)
 The following internal parameters can be modified directly within both the MLX and PyTorch scripts:
 *   `block_sizes` list: Defines the token block sizes to evaluate.
 *   `needle_fact` (in Accuracy Profiler): The fact to hide in the context.
 
 ## Phase 3: Trade-off Simulation
-*   `phase3_simulation.py`: Combines the empirical throughput from Phase 1 and the empirical accuracy from Phase 2 to simulate I/O stalls and plot the final SSD Throughput vs Model Accuracy trade-off curve.
+*   `run_phase3.sh`: **(Primary Entry Point)** A wrapper script that automates running `phase3_simulation.py` for multiple configurations/models and generates the combined Pareto charts.
+*   `phase3_simulation.py`: Combines the empirical throughput from Phase 1 and the empirical accuracy from Phase 2 to simulate I/O stalls and generate trade-off results.
     *   **Command-Line Arguments**:
-        *   `--model`: Hugging Face model ID to graph against (e.g. `meta-llama/Meta-Llama-3.1-8B`).
-    *   **Configurable Parameters (in script)**:
-        *   `context_length`: The length of the context in tokens (default `128000`).
-        *   `vram_budget_tokens`: The max budget of VRAM in tokens (default `1000`).
-        *   `selected_budget_tokens`: The token budget allocated for dynamically fetched blocks (default `500`).
-        *   `generation_steps`: The number of generation steps to simulate (default `1000`).
-        *   `token_size_bytes`: Byte size per token KV (default `131072`).
-        *   `ssd_base_latency_ms`: Base IO latency per fetch in ms (default `0.05`).
-        *   `miss_rate`: Projected speculative miss rate (default `0.19`).
+        *   `--throughput`: Path to the throughput JSON file.
+        *   `--accuracy`: Path to the accuracy JSON file.
+        *   `--output`: Path to save the output simulation results JSON.
+        *   `--selected-budget-tokens`: Selected budget tokens (Top-K) (default: `500`).
+        *   `--generation-steps`: Number of generation steps (default: `1000`).
+        *   `--token-size-bytes`: Token size in bytes per layer (default: `4096`).
+        *   `--num-layers`: Number of layers in model (default: `32`).
+        *   `--ssd-base-latency-ms`: Base NVMe latency in ms (default: `0.05`).
+        *   `--miss-rate`: Miss rate for speculative prefetcher (default: `0.19`).
+        *   `--compute-time-ms-per-step`: Compute time in ms per step (default: `20.0`).
+        *   `--gc-spike-prob`: Probability of GC spike (default: `0.05`).
+        *   `--gc-penalty-ms`: Latency penalty for GC spike in ms (default: `50.0`).
+        *   `--enable-fdp`: Enable FDP mode (zero GC, multiplied throughput).
+        *   `--stripe-multiplier`: Throughput multiplier for FDP striping (default: `4.0`).
+        *   `--pcie-max-mbps`: Max PCIe bandwidth in MB/s (default: `7000.0`).

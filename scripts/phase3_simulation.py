@@ -15,7 +15,12 @@ def run_simulation(
     num_layers=32,                 # 32 layers in Llama-3-8B
     ssd_base_latency_ms=0.05,      # Base NVMe latency
     miss_rate=0.19,                # 19% miss rate for speculative prefetcher
-    compute_time_ms_per_step=20.0  # Assumed dummy compute time (20ms/token)
+    compute_time_ms_per_step=20.0, # Assumed dummy compute time (20ms/token)
+    gc_spike_prob=0.05,            # Probability of a GC spike per step
+    gc_penalty_ms=50.0,            # Latency penalty when a GC spike occurs
+    enable_fdp=False,              # Enable FDP mode (zero GC + striping multiplier)
+    stripe_multiplier=4.0,         # Multiplier for FDP striping
+    pcie_max_mbps=7000.0           # PCIe bandwidth cap
 ):
     """
     Simulates the SolidAttention framework performance using the profiled NVMe
@@ -67,6 +72,13 @@ def run_simulation(
     context_length = 128000       # 128k tokens context
     vram_budget_tokens = 1000     # 1000 tokens VRAM budget
     
+    if enable_fdp:
+        gc_spike_prob = 0.0
+        print(f"\nFDP Mode Enabled: GC overhead eliminated. Throughput multiplier: {stripe_multiplier}x (Max: {pcie_max_mbps} MB/s)")
+    else:
+        print(f"\nStandard Mode: GC spike probability: {gc_spike_prob*100}% ({gc_penalty_ms}ms penalty)")
+
+    
     # ---------------------------------------------------------
     # 4. The Workload Loop
     # ---------------------------------------------------------
@@ -83,6 +95,9 @@ def run_simulation(
             
         block_size_mb = (bs * token_size_bytes) / (1024 * 1024)
         throughput = empirical_throughput_mbps[bs]
+        if enable_fdp:
+            throughput = min(throughput * stripe_multiplier, pcie_max_mbps)
+
         
         total_stall_penalty_ms = 0.0
         total_compute_ms = 0.0
@@ -99,10 +114,13 @@ def run_simulation(
             total_discrete_misses += discrete_missed_blocks
             missed_data_mb = discrete_missed_blocks * block_size_mb
             
+            gc_penalty_this_step = gc_penalty_ms if random.random() < gc_spike_prob else 0.0
+            
             # Stall = Fixed IO latency (incurred per layer) + Transfer time (per layer)
             # Since the forward pass is sequential, this happens `num_layers` times
             stall_penalty_per_layer = (ssd_base_latency_ms if discrete_missed_blocks > 0 else 0.0) + ((missed_data_mb / throughput) * 1000)
-            stall_penalty_ms = stall_penalty_per_layer * num_layers
+            stall_penalty_ms = stall_penalty_per_layer * num_layers + gc_penalty_this_step
+
             
             total_stall_penalty_ms += stall_penalty_ms
             total_compute_ms += compute_time_ms_per_step
@@ -160,6 +178,11 @@ if __name__ == "__main__":
     parser.add_argument("--ssd-base-latency-ms", type=float, default=0.05, help="Base NVMe latency in ms (default: 0.05)")
     parser.add_argument("--miss-rate", type=float, default=0.19, help="Miss rate for speculative prefetcher (default: 0.19)")
     parser.add_argument("--compute-time-ms-per-step", type=float, default=20.0, help="Compute time in ms per step (default: 20.0)")
+    parser.add_argument("--gc-spike-prob", type=float, default=0.05, help="Probability of GC spike (default: 0.05)")
+    parser.add_argument("--gc-penalty-ms", type=float, default=50.0, help="Latency penalty for GC spike in ms (default: 50.0)")
+    parser.add_argument("--enable-fdp", action="store_true", help="Enable FDP mode (zero GC, multiplied throughput)")
+    parser.add_argument("--stripe-multiplier", type=float, default=4.0, help="Throughput multiplier for FDP striping (default: 4.0)")
+    parser.add_argument("--pcie-max-mbps", type=float, default=7000.0, help="Max PCIe bandwidth in MB/s (default: 7000.0)")
     args = parser.parse_args()
     
     run_simulation(
@@ -172,5 +195,10 @@ if __name__ == "__main__":
         num_layers=args.num_layers,
         ssd_base_latency_ms=args.ssd_base_latency_ms,
         miss_rate=args.miss_rate,
-        compute_time_ms_per_step=args.compute_time_ms_per_step
+        compute_time_ms_per_step=args.compute_time_ms_per_step,
+        gc_spike_prob=args.gc_spike_prob,
+        gc_penalty_ms=args.gc_penalty_ms,
+        enable_fdp=args.enable_fdp,
+        stripe_multiplier=args.stripe_multiplier,
+        pcie_max_mbps=args.pcie_max_mbps
     )
