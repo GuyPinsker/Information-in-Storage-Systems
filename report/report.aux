@@ -1,0 +1,66 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{solidattention}
+\citation{solidattention}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Background and the Memory Wall}{1}{subsection.1.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Memory consumption scaling (Adapted from Zheng et al.).}}{1}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:solid_kv_size}{{1}{1}{Memory consumption scaling (Adapted from Zheng et al.)}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-B}}SolidAttention: Low-Latency SSD-based Serving on Memory-Constrained PCs}{1}{subsection.1.2}\protected@file@percent }
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces SSD read throughput (Adapted from Zheng et al.).}}{2}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:solid_throughput}{{2}{2}{SSD read throughput (Adapted from Zheng et al.)}{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Architecture overview of SolidAttention (Adapted from Zheng et al.). The framework coordinates a KV Consolidator, a Speculative Prefetcher, and an SSD-aware Scheduler to hide I/O latency (Adapted from Zheng et al.).}}{2}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:solid_architecture}{{3}{2}{Architecture overview of SolidAttention (Adapted from Zheng et al.). The framework coordinates a KV Consolidator, a Speculative Prefetcher, and an SSD-aware Scheduler to hide I/O latency (Adapted from Zheng et al.)}{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Comparison of memory layouts (Adapted from Zheng et al.). SolidAttention interleaves Key and Value pairs to double the transfer size, improving SSD bandwidth utilization.}}{2}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:solid_kv_consolidator}{{4}{2}{Comparison of memory layouts (Adapted from Zheng et al.). SolidAttention interleaves Key and Value pairs to double the transfer size, improving SSD bandwidth utilization}{figure.caption.4}{}}
+\citation{fdp_overview}
+\citation{fdp_overview}
+\citation{solidattention}
+\citation{solidattention}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-C}}Flexible Data Placement (FDP)}{3}{subsection.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces An example of FDP in action (Adapted from Samsung Semiconductor\cite  {fdp_overview}).}}{3}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:fdp_example}{{5}{3}{An example of FDP in action (Adapted from Samsung Semiconductor\cite {fdp_overview})}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}The Project}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Motivation}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Methodology}{3}{subsection.2.2}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Tokens/Second Throughput Simulation}}{4}{algorithm.1}\protected@file@percent }
+\citation{solidattention}
+\citation{solidattention}
+\citation{solidattention}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Results}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Throughput vs. Accuracy Trade-off}{5}{subsection.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces SSD Random Read Throughput at 4KB token size (Phase 1). Reading larger chunks is fundamentally required to maximize the SSD's physical performance.}}{5}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:throughput_4kb}{{6}{5}{SSD Random Read Throughput at 4KB token size (Phase 1). Reading larger chunks is fundamentally required to maximize the SSD's physical performance}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Accuracy vs. Throughput tradeoff for Llama-3.1-8B-4bit model. This graph illustrates the direct correlation between tokens-per-second throughput and the Needle-In-A-Haystack accuracy score.}}{5}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:tradeoff_llama31}{{7}{5}{Accuracy vs. Throughput tradeoff for Llama-3.1-8B-4bit model. This graph illustrates the direct correlation between tokens-per-second throughput and the Needle-In-A-Haystack accuracy score}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Throughput vs. Accuracy Pareto Front for baseline models. (Phase 3)}}{5}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:pareto_baseline}{{8}{5}{Throughput vs. Accuracy Pareto Front for baseline models. (Phase 3)}{figure.caption.11}{}}
+\citation{solidattention}
+\citation{solidattention}
+\bibcite{solidattention}{1}
+\bibcite{fdp_overview}{2}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Pareto Frontier for Llama-3.1-8B-4bit model, under different miss-rate values.}}{6}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:pareto_miss_rate}{{9}{6}{Pareto Frontier for Llama-3.1-8B-4bit model, under different miss-rate values}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}FDP Improvement}{6}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Conclusion \& Limitations}{6}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{6}{section*.14}\protected@file@percent }
+\newlabel{fig:pareto_fdp_llama31}{{10a}{7}{Llama-3.1-8B}{figure.caption.13}{}}
+\newlabel{sub@fig:pareto_fdp_llama31}{{a}{7}{Llama-3.1-8B}{figure.caption.13}{}}
+\newlabel{fig:pareto_fdp_llama32}{{10b}{7}{Llama-3.2-3B}{figure.caption.13}{}}
+\newlabel{sub@fig:pareto_fdp_llama32}{{b}{7}{Llama-3.2-3B}{figure.caption.13}{}}
+\newlabel{fig:pareto_fdp_qwen}{{10c}{7}{Qwen-2.5-7B}{figure.caption.13}{}}
+\newlabel{sub@fig:pareto_fdp_qwen}{{c}{7}{Qwen-2.5-7B}{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Pareto Frontiers under FDP across three LLMs. The zero-GC penalty and data striping push the frontiers significantly outward, enabling high throughput even at smaller, more accurate block sizes.}}{7}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:pareto_fdp_combined}{{10}{7}{Pareto Frontiers under FDP across three LLMs. The zero-GC penalty and data striping push the frontiers significantly outward, enabling high throughput even at smaller, more accurate block sizes}{figure.caption.13}{}}
+\gdef \@abspage@last{7}
