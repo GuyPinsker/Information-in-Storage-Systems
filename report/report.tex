@@ -42,7 +42,7 @@ Information in Storage Systems, Spring 2026}}
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_kv_size.png}
-            \caption{Memory consumption scaling (Adapted from Zheng et al.).}
+            \caption{Memory consumption scaling (Adapted from \textit{SolidAttention}\cite{solidattention}).}
             \label{fig:solid_kv_size}
         \end{figure}
     
@@ -52,7 +52,7 @@ Information in Storage Systems, Spring 2026}}
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_throughput.png}
-            \caption{SSD read throughput (Adapted from Zheng et al.).}
+            \caption{SSD read throughput (Adapted from \textit{SolidAttention}\cite{solidattention}).}
             \label{fig:solid_throughput}
         \end{figure}
 
@@ -61,7 +61,7 @@ Information in Storage Systems, Spring 2026}}
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_architecture.png}
-            \caption{Architecture overview of SolidAttention (Adapted from Zheng et al.). The framework coordinates a KV Consolidator, a Speculative Prefetcher, and an SSD-aware Scheduler to hide I/O latency (Adapted from Zheng et al.).}
+            \caption{Architecture overview of SolidAttention (Adapted from \textit{SolidAttention}\cite{solidattention}). The framework coordinates a KV Consolidator, a Speculative Prefetcher, and an SSD-aware Scheduler to hide I/O latency.}
             \label{fig:solid_architecture}
         \end{figure}
 
@@ -70,7 +70,7 @@ Information in Storage Systems, Spring 2026}}
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_kv_consolidator.png}
-            \caption{Comparison of memory layouts (Adapted from Zheng et al.). SolidAttention interleaves Key and Value pairs to double the transfer size, improving SSD bandwidth utilization.}
+            \caption{Comparison of memory layouts (Adapted from \textit{SolidAttention}\cite{solidattention}). SolidAttention interleaves Key and Value pairs to double the transfer size, improving SSD bandwidth utilization.}
             \label{fig:solid_kv_consolidator}
         \end{figure}
         
@@ -142,17 +142,17 @@ Information in Storage Systems, Spring 2026}}
             \begin{itemize}
                 \item {\textbf{Number of tokens to generate} An output sequence of 1000 tokens is large enough to make sure the random events (garbage collection, incorrectly prefetched blocks) will occur in significant amount.}
                 \item {\textbf{Context Budget} Similar to SolidAttention, the number of tokens found in the VRAM/DRAM at a given time is no larger than 1000.}
-                \item {\textbf{Number of tokens for Selected Blocks:} How many "Top-K" blocks to select. Similar to SolidAttention, this was set to 1/2 the context budget (500 tokens)}
-                \item {\textbf{Size per token per layer (using FP16 K+V)} Depends on the model - 4KB for Llama, 2KB for Qwen)}
-                \item {\textbf{Number of layers in the model} 32 for Llama, 28 for Qwen}
+                \item {\textbf{Number of tokens for Selected Blocks:} How many "Top-K" blocks to select. Similar to SolidAttention, this was set to 1/2 the context budget (500 tokens).}
+                \item {\textbf{Size per token per layer (using FP16 K+V)} Depends on the model - 4KB for Llama, 2KB for Qwen).}
+                \item {\textbf{Number of layers in the model} 32 for Llama, 28 for Qwen.}
                 \item {\textbf{Miss rate for speculative prefetcher} Prefetch miss probability modeled as 19\%, using \(1-0.81\) as a simplified approximation based on the 81\% average consecutive-selection similarity reported by SolidAttention. Selected blocks were randomly chosen as incorrectly prefetched based on this value.}
                 \item {\textbf{Base SSD latency} Assumed a fixed value of 0.05 ms}
-                \item {\textbf{Dummy compute time} Assumed 20ms for all attention and FFN computations.}
-                \item {\textbf{GC spike per step probability} Assumed 5\% chance.)}
+                \item {\textbf{Dummy compute time} Assumed 20ms for all attention and FFN computations (for all models).}
+                \item {\textbf{GC spike per step probability} Assumed 5\% chance.}
                 \item {\textbf{Latency penalty of a GC spike} Assumed 50ms.}
                 \item {\textbf{FDP mode} When enabled, GC probability is set to 0 and stripe multiplying is applied.}
                 \item {\textbf{Multiplier for FDP striping} An assumed scenario parameter representing a hypothetical effective bandwidth improvement of x4.}
-                \item {\textbf{SSD bandwidth cap} Assumed maximum throughput of 7000 MB/s to avoid reaching unrealistic values with the striping multiplier.}nhnj
+                \item {\textbf{SSD bandwidth cap} Assumed maximum throughput of 7000 MB/s to avoid reaching unrealistic values with the striping multiplier.}
         \end{itemize}
 
         The Tokens/Second throughput is measured as follows:
@@ -207,9 +207,7 @@ Information in Storage Systems, Spring 2026}}
             \label{fig:throughput_4kb}
         \end{figure}
 
-        However, Phase 2 laid bare the downside of this approach. 
-        
-        The NIAH experiment exhibits the same qualitative trend reported by \textit{SolidAttention}\cite{solidattention}: increasing block size eventually reduces retrieval quality. When looking at the actual generated answers, it was clear that the semantic importance of the needle tokens was overriden by the noise introduced by the neighboring tokens in the block. Instead of generating the correct answer, the model started generating text that was influenced by the random content of the entire block (e.g. text about the United States or WW2).
+        However, Phase 2 laid bare the downside of this approach. The NIAH experiment exhibits the same qualitative trend reported by \textit{SolidAttention}\cite{solidattention}: increasing block size eventually reduces retrieval quality. When looking at the actual generated answers, it was clear that the semantic importance of the needle tokens was overriden by the noise introduced by the neighboring tokens in the block. Instead of generating the correct answer, the model started generating text that was influenced by the random content of the entire block (e.g. text about the United States or WW2).
         
         Figure \ref{fig:tradeoff_llama31} shows the accuracy measured for the Llama-3.1-8B-4bit model.
         
@@ -273,7 +271,7 @@ Information in Storage Systems, Spring 2026}}
             \label{fig:pareto_fdp_combined}
         \end{figure}
         
-        These results demonstrate that under the assumed FDP benefits, it allows the use of much smaller block sizes (e.g. 4 tokens) while maintaining the same level of performance. The ability to operate at such small block sizes may be beneficial for less accurate models, or perhaps for different tasks, that performs better and finer granularity.
+        These results demonstrate that under the assumed FDP benefits, it allows the use of much smaller block sizes (e.g. 4 tokens) while maintaining the same level of performance. The ability to operate at such small block sizes may be beneficial for less accurate models, or perhaps for different tasks, that performs better with finer granularity.
 
 \section{Conclusion \& Limitations}
     In this project, I evaluated the \textit{SolidAttention}\cite{solidattention} framework on memory-constrained PCs, focusing on the tension between KV cache block size (which controls SSD I/O efficiency) and LLM generative accuracy (which requires precise token retrieval).

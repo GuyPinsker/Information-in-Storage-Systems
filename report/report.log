@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.8.10)  19 AUG 2026 17:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.8.10)  19 AUG 2026 18:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -654,23 +654,23 @@ Package pdftex.def Info: figures/solid_kv_size.png  used on input line 44.
 
 
  <./figures/solid_kv_size.png>]
-<figures/solid_throughput.png, id=76, 654.445pt x 358.33875pt>
+<figures/solid_throughput.png, id=78, 654.445pt x 358.33875pt>
 File: figures/solid_throughput.png Graphic file (type png)
 <use figures/solid_throughput.png>
 Package pdftex.def Info: figures/solid_throughput.png  used on input line 54.
 (pdftex.def)             Requested size: 226.79846pt x 124.17924pt.
-<figures/solid_architecture.png, id=80, 722.7pt x 361.35pt>
+<figures/solid_architecture.png, id=84, 722.7pt x 361.35pt>
 File: figures/solid_architecture.png Graphic file (type png)
 <use figures/solid_architecture.png>
 Package pdftex.def Info: figures/solid_architecture.png  used on input line 63.
 (pdftex.def)             Requested size: 226.79846pt x 113.39578pt.
-<figures/solid_kv_consolidator.png, id=84, 577.15625pt x 217.81375pt>
+<figures/solid_kv_consolidator.png, id=90, 577.15625pt x 217.81375pt>
 File: figures/solid_kv_consolidator.png Graphic file (type png)
 <use figures/solid_kv_consolidator.png>
 Package pdftex.def Info: figures/solid_kv_consolidator.png  used on input line 72.
 (pdftex.def)             Requested size: 226.79846pt x 85.59178pt.
  [2 <./figures/solid_throughput.png> <./figures/solid_architecture.png> <./figures/solid_kv_consolidator.png>]
-<figures/fdp_example.png, id=104, 1046.91125pt x 519.9425pt>
+<figures/fdp_example.png, id=112, 1046.91125pt x 519.9425pt>
 File: figures/fdp_example.png Graphic file (type png)
 <use figures/fdp_example.png>
 Package pdftex.def Info: figures/fdp_example.png  used on input line 101.
@@ -687,41 +687,41 @@ LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 134.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 160.
  [4]
-<../outputs/phase1/throughput_4KB_1j_1d.png, id=134, 722.7pt x 433.62pt>
+<../outputs/phase1/throughput_4KB_1j_1d.png, id=142, 722.7pt x 433.62pt>
 File: ../outputs/phase1/throughput_4KB_1j_1d.png Graphic file (type png)
 <use ../outputs/phase1/throughput_4KB_1j_1d.png>
 Package pdftex.def Info: ../outputs/phase1/throughput_4KB_1j_1d.png  used on input line 205.
 (pdftex.def)             Requested size: 201.60077pt x 120.95622pt.
-<../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png, id=137, 678.535pt x 407.5225pt>
+<../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png, id=145, 678.535pt x 407.5225pt>
 File: ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png Graphic file (type png)
 <use ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png>
-Package pdftex.def Info: ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png  used on input line 218.
+Package pdftex.def Info: ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png  used on input line 216.
 (pdftex.def)             Requested size: 201.60077pt x 121.07622pt.
-<../outputs/phase3/pareto_results/pareto_combined.png, id=139, 714.0276pt x 424.9476pt>
+<../outputs/phase3/pareto_results/pareto_combined.png, id=147, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/pareto_results/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/pareto_results/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/pareto_results/pareto_combined.png  used on input line 227.
+Package pdftex.def Info: ../outputs/phase3/pareto_results/pareto_combined.png  used on input line 225.
 (pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
-<../outputs/phase3/miss_rate_results/pareto_combined.png, id=142, 714.0276pt x 424.9476pt>
+<../outputs/phase3/miss_rate_results/pareto_combined.png, id=150, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/miss_rate_results/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/miss_rate_results/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/miss_rate_results/pareto_combined.png  used on input line 238.
+Package pdftex.def Info: ../outputs/phase3/miss_rate_results/pareto_combined.png  used on input line 236.
 (pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
  [5 <../outputs/phase1/throughput_4KB_1j_1d.png> <../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png> <../outputs/phase3/pareto_results/pareto_combined.png>]
-<../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png, id=155, 714.0276pt x 424.9476pt>
+<../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png, id=163, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png  used on input line 252.
+Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png  used on input line 250.
 (pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
-<../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png, id=156, 714.0276pt x 424.9476pt>
+<../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png, id=164, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png  used on input line 260.
+Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png  used on input line 258.
 (pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
-<../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png, id=157, 713.3049pt x 424.9476pt>
+<../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png, id=165, 713.3049pt x 424.9476pt>
 File: ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png  used on input line 268.
+Package pdftex.def Info: ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png  used on input line 266.
 (pdftex.def)             Requested size: 201.60077pt x 120.09978pt.
  [6 <../outputs/phase3/miss_rate_results/pareto_combined.png> <../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png> <../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png> <../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png>]
 
@@ -747,17 +747,17 @@ Package rerunfilecheck Info: File `report.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  25001 strings out of 467525
- 465286 string characters out of 5418982
- 893078 words of memory out of 5000000
+ 465289 string characters out of 5418982
+ 893138 words of memory out of 5000000
  53191 multiletter control sequences out of 15000+600000
- 681046 words of font info for 306 fonts, out of 8000000 for 9000
+ 681128 words of font info for 306 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,1445b,550s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (7 pages, 1676474 bytes).
+Output written on report.pdf (7 pages, 1676657 bytes).
 PDF statistics:
- 253 PDF objects out of 1000 (max. 8388607)
- 189 compressed objects within 2 object streams
+ 261 PDF objects out of 1000 (max. 8388607)
+ 193 compressed objects within 2 object streams
  44 named destinations out of 1000 (max. 500000)
  59049 words of extra memory for PDF output out of 61914 (max. 10000000)
 
