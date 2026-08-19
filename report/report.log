@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.8.10)  17 AUG 2026 13:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.8.10)  19 AUG 2026 17:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -540,45 +540,74 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 \ALG@tmplength=\skip58
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/microtype.sty
+Package: microtype 2026/03/01 v3.2d Micro-typographical refinements (RS)
+\MT@toks=\toks39
+\MT@tempbox=\box70
+\MT@count=\count348
+LaTeX Info: Redefining \noprotrusionifhmode on input line 1084.
+LaTeX Info: Redefining \leftprotrusion on input line 1085.
+\MT@prot@toks=\toks40
+LaTeX Info: Redefining \rightprotrusion on input line 1104.
+LaTeX Info: Redefining \textls on input line 1449.
+\MT@outer@kern=\dimen301
+LaTeX Info: Redefining \microtypecontext on input line 2053.
+LaTeX Info: Redefining \textmicrotypecontext on input line 2070.
+\MT@listname@count=\count349
+ (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+File: microtype-pdftex.def 2026/03/01 v3.2d Definitions specific to pdftex (RS)
+LaTeX Info: Redefining \lsstyle on input line 944.
+LaTeX Info: Redefining \lslig on input line 944.
+\MT@outer@space=\skip59
+)
+Package microtype Info: Loading configuration file microtype.cfg.
+ (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/microtype.cfg
+File: microtype.cfg 2026/03/01 v3.2d microtype main configuration file (RS)
+)
+LaTeX Info: Redefining \microtypesetup on input line 3065.
+) (/usr/local/texlive/2026/texmf-dist/tex/latex/sttools/stfloats.sty
+Package: stfloats 2025/06/18 v3.4 Improve float mechanism and baselineskip settings
+\@dblbotnum=\count350
+\c@dblbotnumber=\count351
 ) (/usr/local/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count348
+\l__color_backend_stack_int=\count352
 ) (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
 
 -- Lines per column: 56 (exact).
 (/usr/local/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count349
-\scratchdimen=\dimen301
-\scratchbox=\box70
-\nofMPsegments=\count350
-\nofMParguments=\count351
-\everyMPshowfont=\toks39
-\MPscratchCnt=\count352
-\MPscratchDim=\dimen302
-\MPnumerator=\count353
-\makeMPintoPDFobject=\count354
-\everyMPtoPDFconversion=\toks40
+\scratchcounter=\count353
+\scratchdimen=\dimen302
+\scratchbox=\box71
+\nofMPsegments=\count354
+\nofMParguments=\count355
+\everyMPshowfont=\toks41
+\MPscratchCnt=\count356
+\MPscratchDim=\dimen303
+\MPnumerator=\count357
+\makeMPintoPDFobject=\count358
+\everyMPtoPDFconversion=\toks42
 ) (/usr/local/texlive/2026/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -589,15 +618,37 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 12.
+Package hyperref Info: Link coloring OFF on input line 13.
  (./report.out) (./report.out)
 \@outlinefile=\write4
 \openout4 = `report.out'.
 
+LaTeX Info: Redefining \microtypecontext on input line 13.
+Package microtype Info: Applying patch `item' on input line 13.
+Package microtype Info: Applying patch `toc' on input line 13.
+Package microtype Info: Applying patch `eqnum' on input line 13.
+Package microtype Info: Applying patch `footnote' on input line 13.
+Package microtype Info: Applying patch `verbatim' on input line 13.
+LaTeX Info: Redefining \microtypesetup on input line 13.
+Package microtype Info: Generating PDF output.
+Package microtype Info: Character protrusion enabled (level 2).
+Package microtype Info: Using default protrusion set `alltext'.
+Package microtype Info: Automatic font expansion enabled (level 2),
+(microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
+Package microtype Info: Using default expansion set `alltext-nott'.
+Package microtype Info: Patching command `\showhyphens'.
+Package microtype Info: No adjustment of tracking.
+Package microtype Info: No adjustment of interword spacing.
+Package microtype Info: No adjustment of character kerning.
+ (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/mt-ptm.cfg
+File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
+) (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/mt-cmr.cfg
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
+)
 <figures/solid_kv_size.png, id=57, 598.235pt x 292.09125pt>
 File: figures/solid_kv_size.png Graphic file (type png)
 <use figures/solid_kv_size.png>
-Package pdftex.def Info: figures/solid_kv_size.png  used on input line 45.
+Package pdftex.def Info: figures/solid_kv_size.png  used on input line 44.
 (pdftex.def)             Requested size: 226.79846pt x 110.7373pt.
  [1{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
@@ -606,80 +657,73 @@ Package pdftex.def Info: figures/solid_kv_size.png  used on input line 45.
 <figures/solid_throughput.png, id=76, 654.445pt x 358.33875pt>
 File: figures/solid_throughput.png Graphic file (type png)
 <use figures/solid_throughput.png>
-Package pdftex.def Info: figures/solid_throughput.png  used on input line 55.
+Package pdftex.def Info: figures/solid_throughput.png  used on input line 54.
 (pdftex.def)             Requested size: 226.79846pt x 124.17924pt.
 <figures/solid_architecture.png, id=80, 722.7pt x 361.35pt>
 File: figures/solid_architecture.png Graphic file (type png)
 <use figures/solid_architecture.png>
-Package pdftex.def Info: figures/solid_architecture.png  used on input line 64.
+Package pdftex.def Info: figures/solid_architecture.png  used on input line 63.
 (pdftex.def)             Requested size: 226.79846pt x 113.39578pt.
 <figures/solid_kv_consolidator.png, id=84, 577.15625pt x 217.81375pt>
 File: figures/solid_kv_consolidator.png Graphic file (type png)
 <use figures/solid_kv_consolidator.png>
-Package pdftex.def Info: figures/solid_kv_consolidator.png  used on input line 73.
+Package pdftex.def Info: figures/solid_kv_consolidator.png  used on input line 72.
 (pdftex.def)             Requested size: 226.79846pt x 85.59178pt.
  [2 <./figures/solid_throughput.png> <./figures/solid_architecture.png> <./figures/solid_kv_consolidator.png>]
 <figures/fdp_example.png, id=104, 1046.91125pt x 519.9425pt>
 File: figures/fdp_example.png Graphic file (type png)
 <use figures/fdp_example.png>
-Package pdftex.def Info: figures/fdp_example.png  used on input line 102.
+Package pdftex.def Info: figures/fdp_example.png  used on input line 101.
 (pdftex.def)             Requested size: 226.79846pt x 112.63435pt.
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 125.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 129.
  (/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 ) [3 <./figures/fdp_example.png>]
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 130.
+LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 134.
  (/usr/local/texlive/2026/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 130.
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 156.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 134.
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 160.
  [4]
 <../outputs/phase1/throughput_4KB_1j_1d.png, id=134, 722.7pt x 433.62pt>
 File: ../outputs/phase1/throughput_4KB_1j_1d.png Graphic file (type png)
 <use ../outputs/phase1/throughput_4KB_1j_1d.png>
-Package pdftex.def Info: ../outputs/phase1/throughput_4KB_1j_1d.png  used on input line 201.
+Package pdftex.def Info: ../outputs/phase1/throughput_4KB_1j_1d.png  used on input line 205.
 (pdftex.def)             Requested size: 201.60077pt x 120.95622pt.
 <../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png, id=137, 678.535pt x 407.5225pt>
 File: ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png Graphic file (type png)
 <use ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png>
-Package pdftex.def Info: ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png  used on input line 214.
+Package pdftex.def Info: ../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png  used on input line 218.
 (pdftex.def)             Requested size: 201.60077pt x 121.07622pt.
 <../outputs/phase3/pareto_results/pareto_combined.png, id=139, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/pareto_results/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/pareto_results/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/pareto_results/pareto_combined.png  used on input line 223.
+Package pdftex.def Info: ../outputs/phase3/pareto_results/pareto_combined.png  used on input line 227.
 (pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
 <../outputs/phase3/miss_rate_results/pareto_combined.png, id=142, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/miss_rate_results/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/miss_rate_results/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/miss_rate_results/pareto_combined.png  used on input line 234.
+Package pdftex.def Info: ../outputs/phase3/miss_rate_results/pareto_combined.png  used on input line 238.
 (pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [5 <../outputs/phase1/throughput_4KB_1j_1d.png> <../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png> <../outputs/phase3/pareto_results/pareto_combined.png>]
 <../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png, id=155, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png  used on input line 248.
-(pdftex.def)             Requested size: 165.12378pt x 98.26758pt.
+Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png  used on input line 252.
+(pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
 <../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png, id=156, 714.0276pt x 424.9476pt>
 File: ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png  used on input line 255.
-(pdftex.def)             Requested size: 165.12378pt x 98.26758pt.
+Package pdftex.def Info: ../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png  used on input line 260.
+(pdftex.def)             Requested size: 201.60077pt x 119.97658pt.
 <../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png, id=157, 713.3049pt x 424.9476pt>
 File: ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png Graphic file (type png)
 <use ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png>
-Package pdftex.def Info: ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png  used on input line 262.
-(pdftex.def)             Requested size: 165.12378pt x 98.37134pt.
-
-Underfull \hbox (badness 2245) in paragraph at lines 300--301
-[]\OT1/ptm/m/n/8 Samsung Semi-con-duc-tor, ``NVMe FDP: A Promis-ing New SSD
- []
-
+Package pdftex.def Info: ../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png  used on input line 268.
+(pdftex.def)             Requested size: 201.60077pt x 120.09978pt.
+ [6 <../outputs/phase3/miss_rate_results/pareto_combined.png> <../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png> <../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png> <../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png>]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -691,7 +735,9 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6 <../outputs/phase3/miss_rate_results/pareto_combined.png>] [7 <../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png> <../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png> <../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png>] (./report.aux)
+[7
+
+] (./report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -700,18 +746,18 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: EB4FBA925CDA76A33884D44559FFF12B;2003.
  ) 
 Here is how much of TeX's memory you used:
- 22665 strings out of 467525
- 426903 string characters out of 5418982
- 829280 words of memory out of 5000000
- 51187 multiletter control sequences out of 15000+600000
- 667373 words of font info for 110 fonts, out of 8000000 for 9000
+ 25001 strings out of 467525
+ 465286 string characters out of 5418982
+ 893078 words of memory out of 5000000
+ 53191 multiletter control sequences out of 15000+600000
+ 681046 words of font info for 306 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,8n,104p,1336b,531s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,10n,104p,1445b,550s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (7 pages, 1670858 bytes).
+Output written on report.pdf (7 pages, 1676474 bytes).
 PDF statistics:
  253 PDF objects out of 1000 (max. 8388607)
  189 compressed objects within 2 object streams
  44 named destinations out of 1000 (max. 500000)
- 169 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 59049 words of extra memory for PDF output out of 61914 (max. 10000000)
 

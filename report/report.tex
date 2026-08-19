@@ -8,7 +8,8 @@
 \usepackage{amsmath}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-
+\usepackage{microtype}
+\usepackage{stfloats}
 \begin{document}
 
 \title{SolidAttention Trade-off Study \& Flexible Data Placement (FDP) Based Optimization for LLM Inference}
@@ -25,8 +26,6 @@ Information in Storage Systems, Spring 2026}}
     This report describes the simulation and evaluation of the model's accuracy vs. inference throughput (tokens/sec) trade-off in \textit{SolidAttention} across various block sizes. Furthermore, it describes and presents simulated results of a proposed hardware-level optimization: Using NVMe Flexible Data Placement (FDP) to segregate cache data, reducing Garbage Collection (GC) latency spikes and increasing bandwidth via cross-channel striping. Simulation results show that combining \textit{SolidAttention} with FDP can effectively pushes the Pareto frontier of SSD-based inference forward.
 \end{abstract}
 
-\vspace{0.5cm}
-
 \section{Introduction}
     
     \subsection{Background and the Memory Wall}
@@ -40,7 +39,7 @@ Information in Storage Systems, Spring 2026}}
 
         While techniques such as INT8/INT4 quantization can compress the KV cache, they are often too aggressive and lead to a severe degradation in model accuracy, especially with the rise of numerical outliers in the activation tensors. Instead, to overcome this memory wall, another approach is to offload the KV cache to slower, but larger, storage mediums, such as SSDs. Such approach is demonstrated in \textit{SolidAttention}\cite{solidattention}.
 
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_kv_size.png}
             \caption{Memory consumption scaling (Adapted from Zheng et al.).}
@@ -50,16 +49,16 @@ Information in Storage Systems, Spring 2026}}
     \subsection[SolidAttention: Low-Latency SSD-based Serving on Memory-Constrained PCs]{SolidAttention: Low-Latency SSD-based Serving on \\Memory-Constrained PCs}
         To overcome the memory wall without compromising accuracy, recent systems have explored offloading the KV cache to high-speed NVMe SSDs. \textit{SolidAttention}\cite{solidattention} is a state-of-the-art inference engine that enables SSD-based inference by co-designing sparse attention algorithms with storage management. It relies on the observation that LLM self-attention exhibits high dynamic sparsity; only a small subset of historical tokens heavily influences the generation of the current token. This means that when generating the next token, the model calculates the $QK^T$ similarity scores, but typically only a small fraction of the previous tokens return high similarity values. Therefore, instead of loading the entire KV cache from the SSD at every step, it is possible to retrieve only the necessary past tokens to compute the next token.
 
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_throughput.png}
             \caption{SSD read throughput (Adapted from Zheng et al.).}
             \label{fig:solid_throughput}
         \end{figure}
 
-        However, as learned during the course and as verified by the authors (and seen in Figure \ref{fig:solid_throughput}), SSDs reach their peak performance only when reading large, sequential chunks of data. Reading small, scattered chunks (such as the dynamically selected sparse tokens) results in poor bandwidth utilization due to the internal architecture of flash memory, which relies on channel-level parallelism to achieve high speeds. This disparity between the fine-grained data needs of the LLM and the coarse-grained throughput requirements of the SSD sets the stage for the \textit{SolidAttention}\cite{solidattention} architecture, shown in Figure \ref{fig:solid_architecture}.
+        However, as learned during the course and as verified by the authors (and seen in Figure \ref{fig:solid_throughput}), SSDs reach their peak performance when reading large, sequential chunks of data. Reading small, scattered chunks (such as the dynamically selected sparse tokens) results in poor bandwidth utilization due to the internal architecture of flash memory, which relies on channel-level parallelism to achieve high speeds. This disparity between the fine-grained data needs of the LLM and the coarse-grained throughput requirements of the SSD sets the stage for the \textit{SolidAttention}\cite{solidattention} architecture, shown in Figure \ref{fig:solid_architecture}.
 
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_architecture.png}
             \caption{Architecture overview of SolidAttention (Adapted from Zheng et al.). The framework coordinates a KV Consolidator, a Speculative Prefetcher, and an SSD-aware Scheduler to hide I/O latency (Adapted from Zheng et al.).}
@@ -68,7 +67,7 @@ Information in Storage Systems, Spring 2026}}
 
         To bridge this gap, \textit{SolidAttention}\cite{solidattention} introduces a \textbf{KV Consolidator} (Figure \ref{fig:solid_kv_consolidator}). In typical frameworks, Key and Value tensors are stored separately in memory. \textit{SolidAttention}\cite{solidattention} physically interleaves them token-by-token. By doing this, whenever the model needs a token, the system can fetch its Key and Value simultaneously in a single, contiguous read operation. This doubles the transfer unit size and halves the total number of I/O operations, maximizing SSD bandwidth utilization.
 
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/solid_kv_consolidator.png}
             \caption{Comparison of memory layouts (Adapted from Zheng et al.). SolidAttention interleaves Key and Value pairs to double the transfer size, improving SSD bandwidth utilization.}
@@ -87,26 +86,31 @@ Information in Storage Systems, Spring 2026}}
 
         In order to orchestrate SSD operations and GPU computations, \textit{SolidAttention}\cite{solidattention} relies on an \textbf{SSD-aware Scheduler}. The scheduler receives an execution plan from the inference framework and coordinates GPU computations with concurrent SSD I/O. Breaking the attention computation into microtasks allows it to pipeline fine-grained operations and I/O based on data dependencies (using a DAG representation).
 
-        While highly effective, the performance of \textit{SolidAttention}\cite{solidattention} is still susceptible to the performance characteristics of the SSD and its internal operations, mainly the SSD's garbage collection (GC) process. Since the LLM's KV cache is massive and constantly updated, it frequently triggers GC, which can cause unpredictable latency spikes that stall the GPU. This is particularly problematic for scenarios requiring low latency, such as LLM interactions on PCs/laptops.
+        While highly effective, the performance of \textit{SolidAttention}\cite{solidattention} is still susceptible to the performance characteristics of the SSD and its internal operations. Since the LLM's KV cache is massive and constantly updated, long-running or write-intensive deployments may potentially experience SSD garbage-collection interference, which can cause unpredictable latency spikes that stall the GPU. This is particularly problematic for scenarios requiring low latency, such as LLM interactions on PCs/laptops.
     
     \subsection{Flexible Data Placement (FDP)}
         As learned during the course, data in SSDs is written in page granularity, while the process of erasing is performed in block granularity (a block typically contains many pages). Moreover, pages cannot be overwritten directly - in order to overwrite a page, it must first be erased. The SSD controller constantly writes new data to fresh pages (using over-provisioning) and updates a Logical-to-Physical (L2P) mapping table. The old, obsolete pages are marked as invalid. When free pages become scarce, the SSD must perform a background process called \textbf{Garbage Collection (GC)}: it reads the remaining valid pages from a partially empty block, copies them to a new block, and then erases the entire old block. This process induces extra, unnecessary write traffic, known as Write Amplification (WA).
+
+        For the SolidAttention architecture, the continuous appending of newly generated Key-Value (KV) pairs to the SSD during the autoregressive decode phase results in a massive, sustained write workload which can rapidly deplete the SSD's free block pool. This in turn can force aggressive, mid-session Garbage Collection, which can saturate the SSD's internal channels and cause read latency spikes. Consequently, when the inference engine's speculative prefetcher will attempt to asynchronously load KV blocks, these GC-induced stalls may disrupt the tight computation-I/O overlap, potentially degrading token generation throughput.
         
-        During LLM inference, specifically throughout the autoregressive decode phase, the system continuously appends newly generated Key-Value (KV) pairs to the SSD. This massive, sustained write workload rapidly depletes the SSD's free block pool, forcing aggressive, mid-session Garbage Collection. This reactive GC traffic saturates the SSD's internal channels and causes read latency spikes. Consequently, when the inference engine's speculative prefetcher attempts to asynchronously load KV blocks, these GC-induced stalls disrupt the tight computation-I/O overlap, degrading token generation throughput.
-        
-        NVMe Flexible Data Placement (FDP) (TP4146) is a new storage standard that gives the host computer direct control over where data is physically placed on the SSD. Instead of letting the SSD controller mix all incoming data into the same physical blocks, FDP allows the host to tag write commands with specific identifiers called Reclaim Unit Handles (RUHs). The SSD maps these tags to isolated physical areas called Reclaim Units (RUs) within larger Endurance Groups, ensuring that data streams with similar lifespans are grouped together at the hardware level.
+        NVMe Flexible Data Placement (FDP) (TP4146) is a new storage standard that gives the host computer greater control over where data is physically placed on the SSD. Instead of letting the SSD controller mix all incoming data into the same physical blocks, FDP allows the host to tag write commands with specific identifiers called Reclaim Unit Handles (RUHs). The SSD maps these tags to isolated physical areas called Reclaim Units (RUs) within larger Endurance Groups, ensuring that data streams with similar lifespans are grouped together at the hardware level.
 
         An example of FDP process is shown in Figure \ref{fig:fdp_example}.
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.9\linewidth]{figures/fdp_example.png}
             \caption{An example of FDP in action (Adapted from Samsung Semiconductor\cite{fdp_overview}).}
             \label{fig:fdp_example}
         \end{figure}
 
-        For the SolidAttention architecture, FDP provides a powerful hardware-level isolation mechanism. It allows the host to physically segregate the application-specific LLM data (the entire KV cache for a given inference session) from the general background data of the SSD. Because the gigabytes of KV cache are quarantined in their own dedicated RUs, under an idealized FDP placement in which session data is grouped by lifetime, the inference workload can avoid relocation of still-valid KV pages during the active session. Under this ideal scenario, the inference workload induces absolutely zero Garbage Collection on its own data during the session. The blocks fill sequentially with entirely valid data, preventing the drive from entering reactive GC. When the inference request completes, the host issues an NVMe Deallocate (TRIM) command targeting those specific RUs, instantly dropping them to zero percent valid data so the SSD can erase the blocks without relocating a single page. Furthermore, by striping these session-specific RUHs across multiple physical NAND channels, FDP may enable more predictable and efficient placement of the session's data across the SSD's available parallel resources.
-
-        While the authors of SolidAttention mention that the frequent KV cache write cause write amplifications, and that they found their performance overhead negligible compared to read operations, they did not mention the Garbage Collection process that affects the read operations as well. Thus, FDP can still be beneficial for the SolidAttention framework.
+        While the authors of SolidAttention mention that the frequent KV cache writes cause write amplifications, and that they found their performance overhead negligible compared to read operations, they showed that SolidAttention is highly sensitive to the effective bandwidth and latency available from the SSD:
+        \begin{itemize}
+            \item 4 GB/s background traffic reduces throughput by 58\%.
+            \item 800k IOPS interference reduces throughput by 54\%.
+        \end{itemize}
+        This raises an interesting question: \textit{Can host-controlled placement improve the efficiency of the KV-cache workload?}
+        
+        One possible mechanism that can be improved, is reduced relocation/GC interference. FDP provides a powerful hardware-level isolation mechanism. It allows the host to physically segregate the application-specific LLM data (the entire KV cache for a given inference session) from the general background data of the SSD. Because the gigabytes of KV cache are quarantined in their own dedicated RUs, under an idealized FDP placement in which session data is grouped by lifetime, the inference workload can avoid relocation of still-valid KV pages during the active session. Under this ideal scenario, the inference workload induces absolutely zero Garbage Collection on its own data during the session. The blocks fill sequentially with entirely valid data, preventing the drive from entering reactive GC. When the inference request completes, the host issues an NVMe Deallocate (TRIM) command targeting those specific RUs, instantly dropping them to zero percent valid data so the SSD can erase the blocks without relocating a single page. Furthermore, by striping these session-specific RUHs across multiple physical NAND channels, FDP may enable more predictable and efficient placement of the session's data across the SSD's available parallel resources. Thus, FDP can be beneficial for the SolidAttention framework.
 
 \section{The Project}
     \subsection{Motivation}
@@ -129,7 +133,7 @@ Information in Storage Systems, Spring 2026}}
 
             To quantify this, I utilized a "Needle-In-A-Haystack" testing framework. This test, prevalent in the field of accuracy evaluations of LLMs, involves embedding a specific piece of information (the "needle") deep within a massive corpus of background text (the "haystack") and prompting the model to retrieve it. To ensure the test was robust and representative of dense knowledge retrieval, I built the haystacks using raw text extracted directly from the Wikipedia pages for \textit{"The United States"} and \textit{"World War II"}. The "needle" was the phrase: \textit{"The secret code word to access the vault is 'PINEAPPLE'."} It was retrieved by prompting the model with the phrase: \textit{"Question: What is the secret code word to access the vault? Answer strictly with just the single word.\textbackslash{}nAnswer:"} and allowing it to generate 5 new tokens. If the word \textit{"PINEAPPLE"} (case-insensitive) was detected in the generated text, the test was considered successful.
 
-            Crucially, I carefully planted the needle far enough back (but not too far) in the text so that it would fall outside of the "Init" blocks (the start of the text) and the "Local" blocks (the very end of the text). This forced the model to rely entirely on the "Dynamically Selected Blocks" mechanism to retrieve the answer. I ran this test on three leading open-source models (Llama-3.1-8B, Llama-3.2-3B, and Qwen-2.5-7B, also used in the original paper), progressively varying the algorithmic block size each time to see how often the model failed to find the needle. This failure frequency formed the "miss rate" for my subsequent analyses.
+            Crucially, I carefully planted the needle far enough back (but not too far) in the text so that it would fall outside of the "Init" blocks (the start of the text) and the "Local" blocks (the very end of the text). This forced the model to rely entirely on the "Dynamically Selected Blocks" mechanism to retrieve the answer. I ran this test on three leading open-source models (Llama-3.1-8B, Llama-3.2-3B, and Qwen-2.5-7B, also used in the original paper), progressively varying the algorithmic block size each time to see how often the model failed to find the needle. This failure frequency formed the "retrieval failure rate" for my subsequent analyses.
 
         \subsubsection*{\textbf{Phase 3: Trade-off Simulation}}
             In the final phase, I wrote a custom Python latency simulator to model the entire end-to-end inference system. The simulator ingested the physical hardware speeds established in Phase 1 and merged them with the algorithmic accuracy limits discovered in Phase 2. It estimated the total wall-clock time required to generate tokens, allowing to compute the actual tokens per second throughput.
@@ -141,25 +145,25 @@ Information in Storage Systems, Spring 2026}}
                 \item {\textbf{Number of tokens for Selected Blocks:} How many "Top-K" blocks to select. Similar to SolidAttention, this was set to 1/2 the context budget (500 tokens)}
                 \item {\textbf{Size per token per layer (using FP16 K+V)} Depends on the model - 4KB for Llama, 2KB for Qwen)}
                 \item {\textbf{Number of layers in the model} 32 for Llama, 28 for Qwen}
-                \item {\textbf{Miss rate for speculative prefetcher} Used value of 19\%, based on SolidAttention findings. Selected blocks were randomally chosen as incorrectly prefetched based on this value.}
+                \item {\textbf{Miss rate for speculative prefetcher} Prefetch miss probability modeled as 19\%, using \(1-0.81\) as a simplified approximation based on the 81\% average consecutive-selection similarity reported by SolidAttention. Selected blocks were randomly chosen as incorrectly prefetched based on this value.}
                 \item {\textbf{Base SSD latency} Assumed a fixed value of 0.05 ms}
                 \item {\textbf{Dummy compute time} Assumed 20ms for all attention and FFN computations.}
                 \item {\textbf{GC spike per step probability} Assumed 5\% chance.)}
                 \item {\textbf{Latency penalty of a GC spike} Assumed 50ms.}
                 \item {\textbf{FDP mode} When enabled, GC probability is set to 0 and stripe multiplying is applied.}
-                \item {\textbf{Multiplier for FDP striping} Assumed a multiplier of 4.}
-                \item {\textbf{SSD bandwidth cap} Assumed maximum throughput of 7000 MB/s to avoid reaching unrealistic values with the striping multiplier.}
+                \item {\textbf{Multiplier for FDP striping} An assumed scenario parameter representing a hypothetical effective bandwidth improvement of x4.}
+                \item {\textbf{SSD bandwidth cap} Assumed maximum throughput of 7000 MB/s to avoid reaching unrealistic values with the striping multiplier.}nhnj
         \end{itemize}
 
         The Tokens/Second throughput is measured as follows:
-        \begin{algorithm}
+        \begin{algorithm}[htbp]
         \caption{Tokens/Second Throughput Simulation}
             \begin{algorithmic}[1]
                 \Require Block size $b$ (tokens), miss rate $p_m$, SSD base latency $\ell$,
                         empirical throughput $\mathcal{T}(b)$ (MB/s), compute time $t_c$ per step,
                         GC spike probability $p_{gc}$, GC penalty $t_{gc}$, token size $\sigma$ (bytes/token/layer),
-                        number of layers $L$, generation steps $N$, budget $B$ (tokens)
-                \State $k \leftarrow \max\!\left(1,\, \left\lfloor B / b \right\rfloor\right)$
+                        number of layers $L$, generation steps $N$, selected blocks budget $B_{\text{selected}}$ (tokens)
+                \State $k \leftarrow \max\!\left(1,\, \left\lfloor B_{\text{selected}} / b \right\rfloor\right)$
                 \Comment{Top-$k$ blocks fetched per step}
                 \State $s_b \leftarrow (b \cdot \sigma)\,/\,(1024^2)$
                 \Comment{Block size in MB}
@@ -196,7 +200,7 @@ Information in Storage Systems, Spring 2026}}
     \subsection{Throughput vs. Accuracy Trade-off}
         My storage profiling tests aligned with the results of \textit{SolidAttention}\cite{solidattention}, and confirmed that SSD throughput depends heavily on how large the requests are. Figure \ref{fig:throughput_4kb} shows the baseline random read throughput for different block sizes, (with a 4KB token size). As block size increases, the read throughput (in MB/s) increase as well. This helps solidify the motivation of working in larger block granularity.
 
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.8\linewidth]{../outputs/phase1/throughput_4KB_1j_1d.png}
             \caption{SSD Random Read Throughput at 4KB token size (Phase 1). Reading larger chunks is fundamentally required to maximize the SSD's physical performance.}
@@ -209,7 +213,7 @@ Information in Storage Systems, Spring 2026}}
         
         Figure \ref{fig:tradeoff_llama31} shows the accuracy measured for the Llama-3.1-8B-4bit model.
         
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.8\linewidth]{../outputs/phase3/Meta-Llama-3.1-8B-4bit/solidattention_tradeoff_combined.png}
             \caption{Accuracy vs. Throughput tradeoff for Llama-3.1-8B-4bit model. This graph illustrates the direct correlation between tokens-per-second throughput and the Needle-In-A-Haystack accuracy score.}
@@ -218,7 +222,7 @@ Information in Storage Systems, Spring 2026}}
         
         To better visualize the tradeoff, I generated Pareto frontiers for all the measured models, depicted in figure \ref{fig:pareto_baseline}.
 
-        \begin{figure}[H]
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.8\linewidth]{../outputs/phase3/pareto_results/pareto_combined.png}
             \caption{Throughput vs. Accuracy Pareto Front for baseline models. (Phase 3)}
@@ -228,8 +232,8 @@ Information in Storage Systems, Spring 2026}}
         Common to all models, both the larger 7-8 billion parameters Qwen \& Llama 3.1 and the smaller 3 billion parameters Llama 3.2, the accuracy maintains 100\% accuracy for smaller block sizes, followed by a sharp drop. However, the effective throughput (in generated tokens/second) steadily increase with block size. Overall all models exhibit similar Pareto fronts. These figures show that while increasing block size improves storage efficiency, it eventually degrades retrieval accuracy on the evaluated long-context task, especially when block size grows past 32 tokens.
         
         To further study the tradeoff, I wanted to see the infulence of the fixed miss rate, empirically established by \textit{SolidAttention}\cite{solidattention}. My motivation was to check if potentially improving the prefetching accuracy would create a significant benefit to the performance of SolidAttention, or on the other hand, see if degrading the prefetching accuracy would not signficantly impact the performance. I ran the simulation with a 30\% change to the miss rate might on the Llama-3.1-8B-4bit model. The results are shown in figure \ref{fig:pareto_miss_rate}.
-
-        \begin{figure}[H]
+        
+        \begin{figure}[t]
             \centering
             \includegraphics[width=0.8\linewidth]{../outputs/phase3/miss_rate_results/pareto_combined.png}
             \caption{Pareto Frontier for Llama-3.1-8B-4bit model, under different miss-rate values.}
@@ -241,31 +245,33 @@ Information in Storage Systems, Spring 2026}}
     \subsection{FDP Improvement}
         Across all three models, the FDP Improvement configuration consistently pushes the simulated Pareto front significantly to the right compared to the Baseline architecture, as can be seen in figure \ref{fig:pareto_fdp_combined}. In the Baseline configuration, the "knee" of the curve (the optimal operating point where the system achieves maximum throughput without suffering severe accuracy degradation, at around a block size of 32) peaks at approximately 26-28 tokens per second. By implementing FDP with cross-channel striping, the system effectively sustains the high accuracy at substantially higher throughputs, pushing the optimal operating point to approximately 40-42 tokens per second.
 
-        \begin{figure*}[htpb]
+        \begin{figure}[htbp]
             \centering
-            \begin{subfigure}[c]{0.32\textwidth}
+            \begin{subfigure}[c]{\linewidth}
                 \centering
-                \includegraphics[width=\textwidth]{../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png}
+                \includegraphics[width=0.8\linewidth]{../outputs/phase3/fdp_results/Meta-Llama-3.1-8B-4bit/pareto_combined.png}
                 \caption{Llama-3.1-8B}
                 \label{fig:pareto_fdp_llama31}
             \end{subfigure}
-            \hfill
-            \begin{subfigure}[c]{0.32\textwidth}
+
+            \vspace{0.5cm}
+            \begin{subfigure}[c]{\linewidth}
                 \centering
-                \includegraphics[width=\textwidth]{../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png}
+                \includegraphics[width=0.8\linewidth]{../outputs/phase3/fdp_results/Meta-Llama-3.2-3B-8bit/pareto_combined.png}
                 \caption{Llama-3.2-3B}
                 \label{fig:pareto_fdp_llama32}
             \end{subfigure}
-            \hfill
-            \begin{subfigure}[c]{0.32\textwidth}
+            
+            \vspace{0.5cm}
+            \begin{subfigure}[c]{\linewidth}
                 \centering
-                \includegraphics[width=\textwidth]{../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png}
+                \includegraphics[width=0.8\linewidth]{../outputs/phase3/fdp_results/Qwen2.5-7B-4bit/pareto_combined.png}
                 \caption{Qwen-2.5-7B}
                 \label{fig:pareto_fdp_qwen}
             \end{subfigure}
-            \caption{Pareto Frontiers under FDP across three LLMs. The zero-GC penalty and data striping push the frontiers significantly outward, enabling high throughput even at smaller, more accurate block sizes.}
+            \caption{Pareto Frontiers under the assumed FDP model, across three LLMs. The zero-GC penalty and data striping push the frontiers significantly outward, enabling high throughput even at smaller, more accurate block sizes.}
             \label{fig:pareto_fdp_combined}
-        \end{figure*}
+        \end{figure}
         
         These results demonstrate that under the assumed FDP benefits, it allows the use of much smaller block sizes (e.g. 4 tokens) while maintaining the same level of performance. The ability to operate at such small block sizes may be beneficial for less accurate models, or perhaps for different tasks, that performs better and finer granularity.
 
@@ -279,7 +285,7 @@ Information in Storage Systems, Spring 2026}}
     Under the assumed bandwidth improvement, these results yield several architectural conclusions:
     \begin{enumerate}
         \item The baseline configuration is sufficiently I/O-sensitive that increasing effective SSD bandwidth substantially improves inference throughput.
-        \item By utilizing FDP to stripe blocks across multiple parallel flash channels, it effectively multiplies the available read bandwidth. This allows the system to better mask SSD latency behind the GPU's computation window, moving the inference pipeline from an I/O-bound state to a compute-bound state.
+        \item If utilizing FDP to stripe blocks across multiple parallel flash channels provides a substantial increase in effective SSD bandwidth, compute would become the dominant component of the wall-clock time, as I/O contribution would be sufficiently reduced.
         \item The rightward shift of the Pareto fronts suggests that algorithmic innovations, such as those presented by \textit{SolidAttention}\cite{solidattention}, must be co-designed with physical storage layout in mind, to maximize generative inference performance on memory-constrained edge devices.
     \end{enumerate}
 
